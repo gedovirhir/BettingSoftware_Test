@@ -15,9 +15,6 @@ redis_c_pool = redis.ConnectionPool(
     decode_responses=True
 )
 
-def redis_conn() -> redis.Redis:
-    return redis.Redis(connection_pool=redis_c_pool)
-
 async def actual_events() -> httpx.Response:
     async with httpx.AsyncClient() as client:
         events = await client.get(f"{LINE_PROVIDER_HOST}/actual_events")
@@ -43,6 +40,8 @@ async def update_bets_states(bets: List[dict]) -> List[dict]:
     await asyncio.gather(*[__get_info(bet, sem) for bet in bets])
         
 
+def redis_conn() -> redis.Redis:
+    return redis.Redis(connection_pool=redis_c_pool)
 
 async def redis_add_bet(bet: Bet):
     rs = redis_conn()
