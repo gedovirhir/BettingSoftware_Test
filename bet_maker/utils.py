@@ -5,12 +5,13 @@ import asyncio
 from typing import List
 
 from config import LINE_PROVIDER_HOST
-from config import R_HOST, R_PASSWORD
+from config import R_HOST, R_PORT, R_PASSWORD
 
 from models import Bet
 
 redis_c_pool = redis.ConnectionPool(
     host=R_HOST,
+    port=R_PORT,
     password=R_PASSWORD,
     decode_responses=True
 )

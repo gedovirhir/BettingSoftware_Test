@@ -11,8 +11,5 @@ async def update_event_storage(event: Event):
         {event.id: event}
     )
 
-async def get_event(events_id: Union[str, List[str]]) -> Optional[Event]:
-    if not isinstance(events_id, list):
-        events_id = [events_id]
-    
-    return [events_storage.get(id_) for id_ in events_id]
+async def get_event(events_id: str) -> Optional[Event]:
+    return events_storage.get(events_id)

@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    networks:
+      - web
+  
+  bet_maker:
+    build: 
+      context: bet_maker
+      dockerfile: dockerfile
+    restart: always
+    environment:
+      - BET_MAKER_PORT=${BET_MAKER_PORT}
+      - LINE_PROVIDER_HOST=${MAIN_HOST}:${LINE_PROVIDER_PORT}
+      - REDIS_HOST=${MAIN_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    ports:
+      - ${BET_MAKER_PORT}:${BET_MAKER_PORT}
+      #- ${REDIS_PORT}:${REDIS_PORT}
+      #- ${LINE_PROVIDER_PORT}:${LINE_PROVIDER_PORT}
+    networks:
+      - web
+
+  line_provider:
+    build: 
+      context: line_provider
+      dockerfile: dockerfile
+    restart: always
+    environment:
+      - LINE_PROVIDER_PORT=${LINE_PROVIDER_PORT}
+    ports:
+      - ${LINE_PROVIDER_PORT}:${LINE_PROVIDER_PORT}
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge

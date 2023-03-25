@@ -1,4 +1,5 @@
 import uvicorn
+from config import WEB_PORT, WEB_HOST
 
 from app import *
 from routers import *
@@ -6,6 +7,6 @@ from routers import *
 if __name__ == "__main__":
     uvicorn.run(
         app,
-        host='localhost',
-        port=8081
+        host=WEB_HOST,
+        port=int(WEB_PORT)
     )

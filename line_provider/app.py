@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from models import Event, EventState
 import time
 
 from typing import Dict
+
+from models import Event, EventState
 
 app = FastAPI()
 events_storage: Dict[str, Event] = {

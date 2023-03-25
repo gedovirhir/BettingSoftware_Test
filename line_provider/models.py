@@ -2,9 +2,9 @@ from uuid import uuid4
 from pydantic import BaseModel, validator, Field
 import enum
 from decimal import Decimal
+from datetime import datetime
 
 from typing import Optional, Union
-from datetime import datetime
 
 class EventState(enum.Enum):
     NEW = 1
@@ -14,22 +14,23 @@ class EventState(enum.Enum):
 class Event(BaseModel):
     id: Optional[str] = None
     coef: Optional[Decimal] = Field(decimal_places=2, gt=0)
-    deadline: Optional[Union[float, datetime]] = None
+    deadline: Optional[Union[float, str]] = None
     state: Optional[EventState] = None
     
     @validator('id', pre=True, always=True)
     def create_id(cls, v):
         return v or str(uuid4())
     
-    @validator('deadline', pre=True)
+    @validator('deadline')
     def convert_datetime(cls, v):
-        if isinstance(v, str):
-            try:
-                date_ = datetime.fromisoformat(v)
-                return date_.timestamp()
-            except:
-                pass
-        
-        return v
+        try:
+            if isinstance(v, str):
+                v = datetime.fromisoformat(v).timestamp()
+            elif isinstance(v, float):
+                v = datetime.fromtimestamp(v).timestamp()
+            
+            return v
+        except Exception as ex:
+            raise ValueError('Not in timestamp or datetime format')
     
     

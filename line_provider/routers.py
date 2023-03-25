@@ -1,9 +1,7 @@
 import time
+from datetime import datetime
 
-from fastapi import HTTPException, Response
-from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
-
+from fastapi import HTTPException
 
 from typing import Optional, List
 
@@ -17,7 +15,7 @@ async def api_post_event(event: Event):
         raise HTTPException(status_code=400, detail="Event already exists")
     try:
         await update_event_storage(event)
-        return JSONResponse(content={'message': 'Event added'})
+        return event
     except Exception as ex:
         raise HTTPException(status_code=400, detail=str(ex))
 
@@ -27,7 +25,7 @@ async def api_get_event(event_id: str):
     if not ev:
         raise HTTPException(status_code=404, detail='Event not found')
 
-    return ev[0]
+    return ev
     
 @app.put('/event/{event_id}')
 async def api_put_event(event_id: str, event: Event):
@@ -41,11 +39,12 @@ async def api_put_event(event_id: str, event: Event):
     for p_name, p_value in update_content.items():
         setattr(ev, p_name, p_value)
     
-    return JSONResponse(content={'message': 'Event updated'})
+    return ev
     
 @app.get('/actual_events', response_model=List[Event])
-async def api_get_actual_events():
-    events = await get_events(filter=lambda e: e.deadline > time.time())
+async def api_get_actual_events(cur_time: Optional[datetime] = None):
+    cur_time = (cur_time and cur_time.timestamp()) or time.time()
+    events = await get_events(filter=lambda e: e.deadline and e.deadline > cur_time)
     return events
 
 

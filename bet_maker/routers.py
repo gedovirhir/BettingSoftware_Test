@@ -1,7 +1,4 @@
-import httpx
-
 from fastapi import HTTPException
-from fastapi.responses import JSONResponse
 
 from app import app
 
@@ -16,15 +13,15 @@ from utils import (actual_events,
 async def api_get_events():
     events = await actual_events()
     
-    return JSONResponse(status_code=200, content=events.json())
+    return events.json()
 
 @app.post('/bet')
 async def api_post_bet(bet: Bet):
-    event = await get_event(bet.event_id)
-    content = event.json()
+    resp = await get_event(bet.event_id)
+    event = resp.json()
     
-    if not event.is_success:
-        raise HTTPException(event.status_code, detail=content.get('detail'))
+    if not resp.is_success:
+        raise HTTPException(resp.status_code, detail=event.get('detail'))
     
     await redis_add_bet(bet)
     
