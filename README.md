@@ -18,4 +18,4 @@ docker-compose up -d
 
 /api/doc
 
-/redoc
+/api/redoc
