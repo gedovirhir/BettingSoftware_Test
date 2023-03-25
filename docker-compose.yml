@@ -4,10 +4,11 @@ services:
   redis:
     image: redis:latest
     restart: always
+    command: --port ${REDIS_PORT}
     ports:
       - ${REDIS_PORT}:${REDIS_PORT}
-    networks:
-      - web
+    network_mode: host
+    
   
   bet_maker:
     build: 
@@ -23,8 +24,8 @@ services:
       - ${BET_MAKER_PORT}:${BET_MAKER_PORT}
       #- ${REDIS_PORT}:${REDIS_PORT}
       #- ${LINE_PROVIDER_PORT}:${LINE_PROVIDER_PORT}
-    networks:
-      - web
+    network_mode: host
+    
 
   line_provider:
     build: 
@@ -35,9 +36,4 @@ services:
       - LINE_PROVIDER_PORT=${LINE_PROVIDER_PORT}
     ports:
       - ${LINE_PROVIDER_PORT}:${LINE_PROVIDER_PORT}
-    networks:
-      - web
-
-networks:
-  web:
-    driver: bridge
+    network_mode: host
