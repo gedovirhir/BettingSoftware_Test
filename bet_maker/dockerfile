@@ -2,7 +2,7 @@ FROM python:3.9.10
 
 WORKDIR /app
 
-COPY main.py app.py config.py models.py routers.py utils.py tests.py requirements.txt ./
+COPY main.py app.py config.py models.py routers.py swagger.py utils.py tests.py requirements.txt ./
 
 RUN python -m pip install --upgrade pip
 
