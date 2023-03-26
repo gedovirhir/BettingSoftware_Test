@@ -1,3 +1,7 @@
+# Описание работы
+Реализована симуляция двух обособленных rest api сервисов line_provider, bet_maker, взаимодействие которых обеспечено через api запросы. 
+Для их обособленного запуска, а также запуска redis используется docker-compose.
+
 # Клонировать репозиторий
 git clone github.com/gedovirhir/BettingSoftware_Test
 
